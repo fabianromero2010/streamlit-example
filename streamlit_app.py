@@ -1,38 +1,35 @@
-from collections import namedtuple
-import altair as alt
-import math
-import pandas as pd
 import streamlit as st
 
-"""
-# Welcome to Streamlit!
+# Text files
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:
+text_contents = '''
+Foo, Bar
+123, 456
+789, 000
+'''
 
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+# Different ways to use the API
 
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+st.download_button('Download CSV', text_contents, 'text/csv')
+st.download_button('Download CSV', text_contents)  # Defaults to 'text/plain'
 
+with open('myfile.csv') as f:
+   st.download_button('Download CSV', f)  # Defaults to 'text/plain'
 
-with st.echo(code_location='below'):
-    total_points = st.slider("Number of points in spiral", 1, 5000, 2000)
-    num_turns = st.slider("Number of turns in spiral", 1, 100, 9)
+# ---
+# Binary files
 
-    Point = namedtuple('Point', 'x y')
-    data = []
+binary_contents = b'whatever'
 
-    points_per_turn = total_points / num_turns
+# Different ways to use the API
 
-    for curr_point_num in range(total_points):
-        curr_turn, i = divmod(curr_point_num, points_per_turn)
-        angle = (curr_turn + 1) * 2 * math.pi * i / points_per_turn
-        radius = curr_point_num / total_points
-        x = radius * math.cos(angle)
-        y = radius * math.sin(angle)
-        data.append(Point(x, y))
+st.download_button('Download file', binary_contents)  # Defaults to 'application/octet-stream'
 
-    st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
-        .mark_circle(color='#0068c9', opacity=0.5)
-        .encode(x='x:Q', y='y:Q'))
+with open('myfile.zip', 'rb') as f:
+   st.download_button('Download Zip', f, file_name='archive.zip')  # Defaults to 'application/octet-stream'
+
+# You can also grab the return value of the button,
+# just like with any other button.
+
+if st.download_button(...):
+   st.write('Thanks for downloading!')
